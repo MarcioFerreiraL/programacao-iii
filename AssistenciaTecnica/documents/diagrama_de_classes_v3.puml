@@ -1,0 +1,169 @@
+@startuml
+' Título do Diagrama
+title Diagrama de Classes - Projeto de Programação III
+
+' Configurações de Aparência
+left to right direction
+
+package model {
+
+    ' =============================================
+    ' ===          Classes de Atores            ===
+    ' =============================================
+    abstract class Pessoa {
+        -int id
+        -String nome
+        -String cpf
+        -LocalDate dataNascimento
+        -String endereco
+        +Pessoa(id, nome, cpf, dataNascimento, endereco)
+    }
+
+    class Administrador extends Pessoa implements Relatorio {
+        +Administrador(id, nome, cpf, dataNascimento, endereco)
+        +void abrirOS(cliente, hardware)
+        +void atualizarOS(os, cliente, hardware)
+        +void excluirOS(os)
+    }
+
+    class Atendente extends Pessoa {
+        +Atendente(id, nome, cpf, dataNascimento, endereco)
+        +void abrirOS(cliente, hardware)
+        +void atualizarOS(os, cliente, hardware)
+        +void reqExclusaoOS(os)
+    }
+
+    class Cliente extends Pessoa {
+        -List<Hardware> hardware
+        +Cliente(id, nome, cpf, dataNascimento, endereco)
+        +void cadastrarHardware()
+        +void verHardwares()
+        +void aprovarOrcamento()
+        +void cancelarOS()
+    }
+
+    class Tecnico extends Pessoa {
+        -TemplateMethod templateMethod
+        +Tecnico(id, nome, cpf, dataNascimento, endereco)
+        +void fazerOrcamento(os, valor)
+        +void assumirOS(os)
+        +void executarOS(os, material)
+        +void finalizarOS(os)
+    }
+
+    ' =============================================
+    ' ===        Produtos e Estoque             ===
+    ' =============================================
+    abstract class Produto {
+        -String numeroSerie
+        +Produto(numeroSerie)
+    }
+
+    class Hardware extends Produto {
+        -TipoPeca tipoPeca
+        -Cliente cliente
+        +Hardware(tipoPeca, numeroSerie, cliente)
+    }
+
+    class Peca extends Produto {
+        -String nome
+        -TipoPeca tipoPeca
+        +Peca(numeroSerie, nome, tipoPeca)
+    }
+    
+    class Material {
+        -ArrayList<Peca> pecasUtilizadas
+        +Material(pecasUtilizadas)
+    }
+
+    class Estoque {
+        -Map<Peca, Integer> pecasDisponiveis
+        +void verPecas()
+        +void adicionarPeca(peca, quantidade)
+        +void removerPeca(peca, quantidade)
+        +void verificarDisponibilidade(peca)
+    }
+    
+    enum TipoHardware {
+        COMPUTADOR
+        NOTEBOOK
+        CELULAR
+        OUTROS
+    }
+
+    enum TipoPeca {
+        PROCESSADOR
+        MEMORIA_RAM
+        PLACA_MAE
+        TELA
+        BATERIA
+    }
+
+    ' =============================================
+    ' ===       CORE - Ordem de Serviço         ===
+    ' =============================================
+    class OrdemServico {
+        -int id
+        -double valorOrcamento
+        -String descricao
+        -Material materialUtilizado
+        -Cliente cliente
+        -Hardware hardware
+        -Tecnico tecnicoResponsavel
+        -State estadoOS
+        +OrdemServico(id, valorOrcamento, ... , estadoOS)
+    }
+
+    ' =============================================
+    ' ===     PADRÕES DE PROJETO E INTERFACES   ===
+    ' =============================================
+    interface State {
+        +void abrir()
+        +void orcamentar()
+        +void aprovar()
+        +void executar()
+        +void finalizar()
+        +void cancelar()
+    }
+
+    abstract class TemplateMethod {
+        +{static} void executarProcessoReparo()
+        +abstract void diagnosticarProblema()
+        +abstract void realizarReparo()
+        +abstract void realizarTestes()
+        +abstract void separarMateriais()
+        +abstract void limpezaFinal()
+    }
+
+    interface Relatorio {
+        +void verRelatorioFinanceiro()
+        +void verRelatorioEstoque()
+        +void verRelatorioOS()
+    }
+
+    class DatabaseConnector <<singleton>> {
+        -static DatabaseConnector instance
+        -Connection connection
+        -void DatabaseConnector()
+        +static DatabaseConnector getInstance()
+    }
+
+    ' =============================================
+    ' ===             RELACIONAMENTOS           ===
+    ' =============================================
+    OrdemServico o--> "1" State : estadoOS
+    OrdemServico o--> "1" Cliente : cliente
+    OrdemServico o--> "1" Hardware : hardware
+    OrdemServico o--> "0..1" Tecnico : tecnicoResponsavel
+    OrdemServico o--> "0..1" Material : materialUtilizado
+    
+    Cliente "1" *-- "0..*" Hardware
+    Tecnico ..> TemplateMethod : utiliza
+    
+    Material "1" o-- "1..*" Peca
+    Estoque "1" o-- "*" Peca
+    
+    Hardware --> TipoHardware
+    Peca --> TipoPeca
+}
+@enduml
