@@ -1,11 +1,12 @@
-package com.programacaoiii.model;
+package com.programacaoiii.assistencia_tecnica.controller;
 
 import java.util.ArrayList;
+import com.programacaoiii.assistencia_tecnica.model.entity.Peca;
 
-public class Material {
+public class MaterialController {
 	ArrayList<Peca> pecasUtilizadas = new ArrayList<>();
 
-	public Material(ArrayList<Peca> pecasUtilizadas) {
+	public MaterialController(ArrayList<Peca> pecasUtilizadas) {
 		this.pecasUtilizadas = pecasUtilizadas;
 	}
 

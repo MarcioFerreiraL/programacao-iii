@@ -1,4 +1,4 @@
-package com.programacaoiii.model;
+package com.programacaoiii.assistencia_tecnica.model.enums;
 
 public enum TipoPeca {
 	PROCESSADOR,

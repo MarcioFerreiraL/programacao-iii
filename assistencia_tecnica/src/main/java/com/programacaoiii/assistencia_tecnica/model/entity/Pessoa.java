@@ -1,28 +1,39 @@
-package com.programacaoiii.model;
+package com.programacaoiii.assistencia_tecnica.model.entity;
 
 import java.time.LocalDate;
+import java.util.UUID;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
+@MappedSuperclass
 public abstract class Pessoa{
-	private int id;
+	
+	@Id
+	private UUID id;
 	private String nome;
+	
+	@Column(nullable = false, unique = true)
 	private String cpf;
+	
+	@Column(nullable = false)
 	private LocalDate dataNascimento;
 	private String endereco;
 	
-	public Pessoa(int id, String nome, String cpf, LocalDate dataNascimento, String endereco) {
+	public Pessoa() {
+    }
+	
+	public Pessoa(String nome, String cpf, LocalDate dataNascimento, String endereco) {
 		super();
+		this.id = UUID.randomUUID();
 		this.nome = nome;
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
 		this.endereco = endereco;
 	}
 	
-	public int getId() {
+	public UUID getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getNome() {

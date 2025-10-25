@@ -1,8 +1,11 @@
-package com.programacaoiii.model;
+package com.programacaoiii.assistencia_tecnica.controller;
 
 import java.util.Map;
 
-public class Estoque {
+import com.programacaoiii.assistencia_tecnica.model.entity.Peca;
+
+
+public class EstoqueController {
 	private Map<Peca, Integer> pecasDisponiveis;
 	
 	public void verPecas() {
